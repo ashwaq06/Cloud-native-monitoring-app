@@ -17,7 +17,9 @@ Containerized using Docker and pushed to AWS ECR for easy deployment on Kubernet
 <h2>Getting Started</h2>
 <h3>Prerequisites<h3>
  <ul>
-Docker
-Kubernetes
-AWS Account with ECR and EKS setup
+   Docker
+  
+   Kubernetes
+  
+   AWS Account with ECR and EKS setup
  </ul>
