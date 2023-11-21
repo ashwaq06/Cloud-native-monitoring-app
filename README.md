@@ -2,6 +2,11 @@
 
 This is a Python application for monitoring resource usage in a cloud-native environment, such as Kubernetes. The app is built using Flask and psutil, and it can be run locally or containerized with Docker.
 
+![CPU Utilization Screenshot](https://github.com/ashwaq06/Cloud-native-monitoring-app/assets/80192952/12442fb4-7dc3-4ea4-b626-c735e7b1d05f)
+![Memory Utilization Screenshot](https://github.com/ashwaq06/Cloud-native-monitoring-app/assets/80192952/0492888d-977f-4b62-97d3-05e302f64077)
+
+
+
 ## 🌟 Features
 
 - Monitor CPU, memory, disk, and network usage of your Kubernetes nodes
@@ -88,6 +93,8 @@ To run the Docker container, execute the following command:
 $ docker run -p 5000:5000 <image_name>
 ```
 This will start the Flask server in a Docker container on localhost:5000. Navigate to http://localhost:5000/ on your browser to access the application.
+
+![Docker Container Screenshot](https://github.com/ashwaq06/Cloud-native-monitoring-app/assets/80192952/a271f2ad-409d-409a-85eb-f326ecf78e61)
 
 ### Part 3: Pushing the Docker image to ECR 
 **Step 1: Create an ECR repository**
