@@ -154,7 +154,6 @@ spec:
         ports:
         - containerPort: 5000
 
----
 
 #service
 apiVersion: v1
