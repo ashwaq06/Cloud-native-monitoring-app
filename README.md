@@ -122,7 +122,7 @@ Push the Docker image to ECR using the push command on the console:
 ```
 $ docker push <ecr_repo_uri>:
 ```
-### Part 4: Creating an EKS cluster and deploying the app using Python
+### Part 4: Creating an EKS cluster and deploying the app using YAMl
 **Step 1: Create an EKS cluster**
 
 Create an EKS cluster and add node group.
@@ -132,73 +132,53 @@ Create an EKS cluster and add node group.
 Create a node group in the EKS cluster.
 
 **Step 3: Create deployment and service**
-```jsx
-from kubernetes import client, config
+```yaml
+# my-flask-app-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-flask-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-flask-app
+  template:
+    metadata:
+      labels:
+        app: my-flask-app
+    spec:
+      containers:
+      - name: my-flask-container
+        image: 568373317874.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo:latest
+        ports:
+        - containerPort: 5000
 
-# Load Kubernetes configuration
-config.load_kube_config()
+---
 
-# Create a Kubernetes API client
-api_client = client.ApiClient()
-
-# Define the deployment
-deployment = client.V1Deployment(
-    metadata=client.V1ObjectMeta(name="my-flask-app"),
-    spec=client.V1DeploymentSpec(
-        replicas=1,
-        selector=client.V1LabelSelector(
-            match_labels={"app": "my-flask-app"}
-        ),
-        template=client.V1PodTemplateSpec(
-            metadata=client.V1ObjectMeta(
-                labels={"app": "my-flask-app"}
-            ),
-            spec=client.V1PodSpec(
-                containers=[
-                    client.V1Container(
-                        name="my-flask-container",
-                        image="568373317874.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo:latest",
-                        ports=[client.V1ContainerPort(container_port=5000)]
-                    )
-                ]
-            )
-        )
-    )
-)
-
-# Create the deployment
-api_instance = client.AppsV1Api(api_client)
-api_instance.create_namespaced_deployment(
-    namespace="default",
-    body=deployment
-)
-
-# Define the service
-service = client.V1Service(
-    metadata=client.V1ObjectMeta(name="my-flask-service"),
-    spec=client.V1ServiceSpec(
-        selector={"app": "my-flask-app"},
-        ports=[client.V1ServicePort(port=5000)]
-    )
-)
-
-# Create the service
-api_instance = client.CoreV1Api(api_client)
-api_instance.create_namespaced_service(
-    namespace="default",
-    body=service
-)
+# my-flask-app-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-flask-service
+spec:
+  selector:
+    app: my-flask-app
+  ports:
+  - port: 5000
 ```
-Make sure to modify the image name on line 25 with the URI of your image.
-- After modifying the file, run the command "python3 eks.py" to create the deployment and service.
-- To verify that the deployment and service have been created successfully, use the following commands:
-
+Make sure to modify the image name with the URI of your image.
+- Save the above YAML configurations in separate files, for example, `my-flask-app-deployment.yaml` and `my-flask-app-service.yaml`. You can then apply these configurations to your Kubernetes cluster using the kubectl apply command:
+```bash
+kubectl apply -f my-flask-app-deployment.yaml
+kubectl apply -f my-flask-app-service.yaml
+```
 To check the deployments
-``` jsx
+```bash
 kubectl get deployment -n default
 ```
 To check the service
-```jsx
+```bash
 kubectl get service -n default
 ``` 
 To check the pods
