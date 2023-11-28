@@ -122,7 +122,7 @@ Push the Docker image to ECR using the push command on the console:
 ```
 $ docker push <ecr_repo_uri>:
 ```
-### Part 4: Creating an EKS cluster and deploying the app using YAMl
+### Part 4: Creating an EKS cluster and deploying the app using YAML
 **Step 1: Create an EKS cluster**
 
 Create an EKS cluster and add node group.
@@ -133,7 +133,7 @@ Create a node group in the EKS cluster.
 
 **Step 3: Create deployment and service**
 ```yaml
-# my-flask-app-deployment.yaml
+#deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -156,7 +156,7 @@ spec:
 
 ---
 
-# my-flask-app-service.yaml
+#service
 apiVersion: v1
 kind: Service
 metadata:
@@ -167,11 +167,14 @@ spec:
   ports:
   - port: 5000
 ```
-Make sure to modify the image name with the URI of your image.
-- Save the above YAML configurations in separate files, for example, `my-flask-app-deployment.yaml` and `my-flask-app-service.yaml`. You can then apply these configurations to your Kubernetes cluster using the kubectl apply command:
+- Make sure to modify the image name with the URI of your image.
+- Before applying the configuration of the file, Ensure that your `kubectl` is configured to interact with your EKS cluster by running the following command:
+ ```bash
+aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
+```
+- Save the above YAML configurations into a file naming it as `eks.yaml` or any other name as per your wish. You can then apply these configurations to your Kubernetes cluster using the `kubectl` apply command:
 ```bash
-kubectl apply -f my-flask-app-deployment.yaml
-kubectl apply -f my-flask-app-service.yaml
+kubectl apply -f eks.yaml
 ```
 To check the deployments
 ```bash
@@ -182,13 +185,13 @@ To check the service
 kubectl get service -n default
 ``` 
 To check the pods
-```jsx
+```bash
 kubectl get pods -n default
 ``` 
 
 - Once the pod is up and running, you can expose the service using port-forwarding. To do this, run the following command:
 
-```jsx
+```bash
 kubectl port-forward service/<service_name> 5000:5000
 ```
 This will allow you to access the service on your local machine at http://localhost:5000.
